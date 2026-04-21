@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../../image/屏幕截图 2026-04-12 100203.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100221.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100232.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100245.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100256.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100305.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100321.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100332.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100340.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100408.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100449.png</file>
+        <file>../../image/屏幕截图 2026-04-12 100506.png</file>
+    </qresource>
+</RCC>
