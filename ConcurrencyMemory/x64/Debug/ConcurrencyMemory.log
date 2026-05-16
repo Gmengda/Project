@@ -1,0 +1,60 @@
+﻿  CentrualCache.cpp
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CentrualCache.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CentrualCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“CentrualCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“CentrualCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(159,23): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?)
+  (编译源文件“CentrualCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\PageCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“CentrualCache.cpp”)
+  
+  ConcurrencyMemory.cpp
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\ObjectBool.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ConcurrencyMemory.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ConcurrencyMemory.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(159,23): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?)
+  (编译源文件“ConcurrencyMemory.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\ThreadCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ConcurrencyMemory.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CentrualCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ConcurrencyMemory.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\pageCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ConcurrencyMemory.cpp”)
+  
+  PageCache.cpp
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\PageCache.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\PageCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“PageCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“PageCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(159,23): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?)
+  (编译源文件“PageCache.cpp”)
+  
+  ThreadCache.cpp
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\ThreadCache.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\ThreadCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ThreadCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ThreadCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CommonH.h(159,23): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?)
+  (编译源文件“ThreadCache.cpp”)
+  
+E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\ConcurrencyMemory\CentrualCache.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  (编译源文件“ThreadCache.cpp”)
+  
+  正在生成代码...
+  ConcurrencyMemory.vcxproj -> E:\code\Project\ConcurrencyMemory\ConcurrencyMemory\x64\Debug\ConcurrencyMemory.exe
