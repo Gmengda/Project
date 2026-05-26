@@ -1,35 +1,104 @@
 #include "CentrualCache.h"
 #include "PageCache.h"
-CentrualCache CentrualCache::_sInst;
 
-size_t CentrualCache::FetchRangeObj(void*& start, void*& end, size_t n, size_t size)
+CentralCache CentralCache::_sInst;
+
+// 获取一个非空的span
+Span* CentralCache::GetOneSpan(SpanList& list, size_t size)
+{
+	// 查看当前的spanlist中是否有还有未分配对象的span
+	Span* it = list.Begin();
+	while (it != list.End())
+	{
+		if (it->_freeList != nullptr)
+		{
+			return it;
+		}
+		else
+		{
+			it = it->_next;
+		}
+	}
+
+	// 先把central cache的桶锁解掉，这样如果其他线程释放内存对象回来，不会阻塞
+	list._mtx.unlock();
+
+	// 走到这里说没有空闲span了，只能找page cache要
+	PageCache::GetInstance()->_pageMtx.lock();
+	Span* span = PageCache::GetInstance()->NewSpan(SizeClass::NumMovePage(size));
+	span->_isUse = true;
+	span->_objSize = size;
+	PageCache::GetInstance()->_pageMtx.unlock();
+
+	// 对获取span进行切分，不需要加锁，因为这会其他线程访问不到这个span
+
+	// 计算span的大块内存的起始地址和大块内存的大小(字节数)
+	char* start = (char*)(span->_pageId << PAGE_SHIFT);
+	size_t bytes = span->_n << PAGE_SHIFT;
+	char* end = start + bytes;
+
+	// 把大块内存切成自由链表链接起来
+	// 1、先切一块下来去做头，方便尾插
+	span->_freeList = start;
+	start += size;
+	void* tail = span->_freeList;
+	int i = 1;
+	while (start < end)
+	{
+		++i;
+		NextObj(tail) = start;
+		tail = NextObj(tail); // tail = start;
+		start += size;
+	}
+
+	NextObj(tail) = nullptr;
+
+	// 1、条件断点
+	// 2、疑似死循环，可以中断程序，程序会在正在运行的地方停下来
+	//int j = 0;
+	//void* cur = span->_freeList;
+	//while (cur)
+	//{
+	//	cur = NextObj(cur);
+	//	++j;
+	//}
+
+	//if (j != (bytes / size))
+	//{
+	//	int x = 0;
+	//}
+
+	// 切好span以后，需要把span挂到桶里面去的时候，再加锁
+	list._mtx.lock();
+	list.PushFront(span);
+
+	return span;
+}
+
+// 从中心缓存获取一定数量的对象给thread cache
+size_t CentralCache::FetchRangeObj(void*& start, void*& end, size_t batchNum, size_t size)
 {
 	size_t index = SizeClass::Index(size);
-	//加锁，保证安全
 	_spanLists[index]._mtx.lock();
 
-	//获取一个非空的span 有内存的span 
 	Span* span = GetOneSpan(_spanLists[index], size);
 	assert(span);
 	assert(span->_freeList);
 
+	// 从span中获取batchNum个对象
+	// 如果不够batchNum个，有多少拿多少
 	start = span->_freeList;
 	end = start;
-	
+	size_t i = 0;
 	size_t actualNum = 1;
-	for (size_t i = 0; i < n - 1; i++)
+	while (i < batchNum - 1 && NextObj(end) != nullptr)
 	{
-		//如果超出限制，后面就会崩掉
-		if (NextObj(end) == nullptr)
-		{
-			break;
-		}
 		end = NextObj(end);
-		actualNum++;
+		++i;
+		++actualNum;
 	}
 	span->_freeList = NextObj(end);
 	NextObj(end) = nullptr;
-
 	span->_useCount += actualNum;
 
 	//// 条件断点
@@ -46,109 +115,44 @@ size_t CentrualCache::FetchRangeObj(void*& start, void*& end, size_t n, size_t s
 		int x = 0;
 	}
 
-	//解锁
 	_spanLists[index]._mtx.unlock();
+
 	return actualNum;
 }
 
-
-
-//获取一个非空的 span 有内存的span
-Span* CentrualCache::GetOneSpan(SpanList& list, size_t size)
+void CentralCache::ReleaseListToSpans(void* start, size_t size)
 {
-	//1.查看当前span 列表中是否还有未分配的空间
-	Span* it = list.Begin();
-	while (it != list.end())
-	{
-		if (it->_freeList != nullptr)
-		{
-			return it;
-		}
-		else
-		{
-			it = it->_next;
-		}
-	}
-	//先把central cache桶锁解开 这样其他线程释放对象也可以进来
-	list._mtx.unlock();
-
-
-
-
-	//2.没有新的空间，只能和pagechche要
-	//既然要去访问PageCache 保证锁安全
-	PageCache::GetPageCache()->getMutex().lock();
-	Span* span = PageCache::GetPageCache()->NewSpan(SizeClass::NumMovePage(size));
-	span->_isUse = true;
-	PageCache::GetPageCache()->getMutex().unlock();
-	
-	//后续给span切分 再加锁？
-	//list._mtx.lock();
-	//不用再给centrualcache再加锁了，因为其他线程这会拿不到这个span
-	
-
-	//计算span 大块内存的起始地址
-	char* start = (char*)(span->_pageId << PAGE_SHIFT);
-	//计算 大块内存的字节数 大小
-	size_t bytes = span->_n << PAGE_SHIFT;
-	char* end = start + bytes;
-
-	//3.把大块内存切成块挂起来 设置NextOBJ
-	//尾插保证数据连续性
-	span->_freeList = start;
-	start += size;
-	void* tail = span->_freeList;
-	while (start < end)
-	{
-		NextObj(tail) = start;
-		tail = NextObj(tail);
-		start += size;
-	}
-	NextObj(tail) = nullptr;
-	//4.把新获取的Span 插入到list里
-	//切好span后需要把span挂到桶里面去的时候再加锁
-	list._mtx.lock();
-	list.PushFront(span);
-
-	return span;
-}
-
-//将一定数量的对象挂到桶里
-void CentrualCache::ReleaseListToSpan(void* start, size_t size)
-{
-	
 	size_t index = SizeClass::Index(size);
 	_spanLists[index]._mtx.lock();
-
-	//start 自由链里面不一定都是同一span里面 的空间  
-	// 需要找到对应空间的span
-	//还给桶
 	while (start)
 	{
 		void* next = NextObj(start);
-		//获取id号对应的span
-		Span* span = PageCache::GetPageCache()->MapObjectToSpan(start);
-		//头插
+
+		Span* span = PageCache::GetInstance()->MapObjectToSpan(start);
 		NextObj(start) = span->_freeList;
 		span->_freeList = start;
-		
 		span->_useCount--;
-		//说明切分出去的小块都回来了
-		//这就可以再回收给pageCache  pageCache可以再去尝试合并前后页进行管理
+
+		// 说明span的切分出去的所有小块内存都回来了
+		// 这个span就可以再回收给page cache，pagecache可以再尝试去做前后页的合并
 		if (span->_useCount == 0)
 		{
-			_spanLists[index].Rease(span);
+			_spanLists[index].Erase(span);
 			span->_freeList = nullptr;
 			span->_next = nullptr;
 			span->_prev = nullptr;
 
-			//释放span给pageCache
+			// 释放span给page cache时，使用page cache的锁就可以了
+			// 这时把桶锁解掉
 			_spanLists[index]._mtx.unlock();
-			PageCache::GetPageCache()->getMutex().lock();
-			PageCache::GetPageCache()->ReleasepanToPageCache(span);
-			PageCache::GetPageCache()->getMutex().unlock();
+
+			PageCache::GetInstance()->_pageMtx.lock();
+			PageCache::GetInstance()->ReleaseSpanToPageCache(span);
+			PageCache::GetInstance()->_pageMtx.unlock();
+
 			_spanLists[index]._mtx.lock();
 		}
+
 		start = next;
 	}
 

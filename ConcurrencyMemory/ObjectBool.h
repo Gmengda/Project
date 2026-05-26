@@ -17,7 +17,7 @@ public:
 		if (_freeList)
 		{
 			void* next = *((void**)_freeList);
-			obj = _freeList;
+			obj = (T*)_freeList;
 			_freeList = next;
 		}
 		else
@@ -26,7 +26,8 @@ public:
 			if (_remain < sizeof(T))
 			{
 				_remain = 128 * 1024;
-				_memory = (char*)malloc(_remain);
+				//_memory = (char*)malloc(_remain);
+				_memory = (char*)SystemAlloc(_remain>>13);
 				if (_memory == nullptr)
 				{
 					throw std::bad_alloc();

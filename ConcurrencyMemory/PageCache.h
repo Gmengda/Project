@@ -1,34 +1,40 @@
 #pragma once
+
 #include "CommonH.h"
+#include "ObjectBool.h"
+#include "PageMap.h"
 
 class PageCache
 {
 public:
-	static PageCache* GetPageCache()
+	static PageCache* GetInstance()
 	{
-		return &_sInstan;
+		return &_sInst;
 	}
 
-	//获取一个k页的Span
-	Span* NewSpan(size_t k);
-	//获取从对象到span 的映射
+	// 获取从对象到span的映射
 	Span* MapObjectToSpan(void* obj);
-	//释放空闲的Span回到pageCache
-	void ReleasepanToPageCache(Span* span);
 
-	std::mutex& getMutex()
-	{
-		return _pageMtx;
-	}
+	// 释放空闲span回到Pagecache，并合并相邻的span
+	void ReleaseSpanToPageCache(Span* span);
 
-private:
-	SpanList _spanList[NPAGES];
+	// 获取一个K页的span
+	Span* NewSpan(size_t k);
+
 	std::mutex _pageMtx;
+private:
+	SpanList _spanLists[NPAGES];
+	ObjectPool<Span> _spanPool;
 
-	std::unordered_map<PAGE_ID, Span*> _idSpanMap;
+	//std::unordered_map<PAGE_ID, Span*> _idSpanMap;
+	//std::map<PAGE_ID, Span*> _idSpanMap;
+	TCMalloc_PageMap1<32 - PAGE_SHIFT> _idSpanMap;
 
 	PageCache()
-	{ }
+	{
+	}
 	PageCache(const PageCache&) = delete;
-	static PageCache _sInstan;
+
+
+	static PageCache _sInst;
 };
